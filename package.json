@@ -1,6 +1,6 @@
 {
   "name": "mongo-ext-populate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NodeJS MongoDB external populate for microservices",
   "main": "index.js",
   "scripts": {
