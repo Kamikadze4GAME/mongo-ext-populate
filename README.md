@@ -54,12 +54,12 @@ extPopulate.populate(id, attribute, fields, function (err, result) {
 #### Middleware
 
 ```js
-var extPopulate = require('mongo-ext-populate');
+var ExtPopulate = require('mongo-ext-populate');
 var express = require('express');
 var router = express.Router();
 
 var resultKey = 'key';
-var ExtPopulate = new extPopulate(resultKey);
+var extPopulate = new ExtPopulate(resultKey).PopulateMiddleware;
 
 var attribute = 'key';     //equals to "name" attribute used by microservice A
 var fields = {attr1: 1, attr2: 1, attr3: 0}    //fields selection
@@ -70,7 +70,7 @@ router.route('/api-route')
     function (req, res, next) {
       res[resultKey] = '1' //id to be populates
     },
-    ExtPopulate.populate(attribute, fields),
+    extPopulate.populate(attribute, fields),
     function (req, res, next) {
       //res[resultKey] now contains the populated object
     },
