@@ -33,7 +33,8 @@
   "homepage": "https://github.com/Palmabit-IT/mongo-ext-populate#readme",
   "dependencies": {
     "kue": "^0.11.1",
-    "mongojs": "^2.4.0"
+    "mongojs": "^2.4.0",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "chai": "*",
