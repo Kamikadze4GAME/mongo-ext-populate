@@ -147,8 +147,8 @@ describe('External populate: ', function () {
           throw new Error('Expected not to receive an error');
         }
 
-        req.resultKey.name.should.equal(data[0].name);
-        req.resultKey.email.should.equal(data[0].email);
+        req.resultKey.test.name.should.equal(data[0].name);
+        req.resultKey.test.email.should.equal(data[0].email);
         done();
       });
     });
@@ -163,8 +163,8 @@ describe('External populate: ', function () {
           throw new Error('Expected not to receive an error');
         }
 
-        req.resultKey.name.should.equal(data[0].name);
-        should.not.exist(req.resultKey.email);
+        req.resultKey.test.name.should.equal(data[0].name);
+        should.not.exist(req.resultKey.test.email);
         done();
       });
     });
@@ -179,11 +179,11 @@ describe('External populate: ', function () {
           throw new Error('Expected not to receive an error');
         }
 
-        req.resultKey.should.have.length(2);
-        req.resultKey[0].name.should.equal(data[0].name);
-        req.resultKey[0].email.should.equal(data[0].email);
-        req.resultKey[1].name.should.equal(data[1].name);
-        req.resultKey[1].email.should.equal(data[1].email);
+        req.resultKey.test.should.have.length(2);
+        req.resultKey.test[0].name.should.equal(data[0].name);
+        req.resultKey.test[0].email.should.equal(data[0].email);
+        req.resultKey.test[1].name.should.equal(data[1].name);
+        req.resultKey.test[1].email.should.equal(data[1].email);
         done();
       });
     });
@@ -198,11 +198,85 @@ describe('External populate: ', function () {
           throw new Error('Expected not to receive an error');
         }
 
-        req.resultKey.should.have.length(2);
-        req.resultKey[0].name.should.equal(data[0].name);
-        should.not.exist(req.resultKey[0].email);
-        req.resultKey[1].name.should.equal(data[1].name);
-        should.not.exist(req.resultKey[1].email);
+        req.resultKey.test.should.have.length(2);
+        req.resultKey.test[0].name.should.equal(data[0].name);
+        should.not.exist(req.resultKey.test[0].email);
+        req.resultKey.test[1].name.should.equal(data[1].name);
+        should.not.exist(req.resultKey.test[1].email);
+        done();
+      });
+    });
+
+    it('should populate a list of objects', function (done) {
+      req.resultKey = [
+        {
+          test: data[0]._id
+        },
+        {
+          test: data[1]._id
+        }
+      ];
+
+      ExternalPopulate.populate('test', {_id: 0}, true)(req, res, function next(err) {
+        if (err) {
+          throw new Error('Expected not to receive an error');
+        }
+
+        req.resultKey.should.to.deep.equal([
+          {
+            test: {
+              name: data[0].name,
+              email: data[0].email
+            }
+          },
+          {
+            test: {
+              name: data[1].name,
+              email: data[1].email
+            }
+          }
+        ]);
+        done();
+      });
+    });
+
+    it('should populate a list of paginates objects', function (done) {
+      req.resultKey = {
+        options: {
+          from: 0,
+          limit: 10,
+          page: 1
+        },
+        results: [
+          {
+            test: data[0]._id
+          },
+          {
+            test: data[1]._id
+          }
+        ],
+        total: 2
+      };
+
+      ExternalPopulate.populate('test', {_id: 0}, true)(req, res, function next(err) {
+        if (err) {
+          throw new Error('Expected not to receive an error');
+        }
+
+        req.resultKey.results.should.to.deep.equal([
+          {
+            test: {
+              name: data[0].name,
+              email: data[0].email
+            }
+          },
+          {
+            test: {
+              name: data[1].name,
+              email: data[1].email
+            }
+          }
+        ]);
         done();
       });
     });
