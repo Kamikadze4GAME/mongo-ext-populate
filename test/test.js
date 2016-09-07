@@ -214,6 +214,9 @@ describe('External populate: ', function () {
         },
         {
           test: data[1]._id
+        },
+        {
+          test: [data[0]._id, {foo: 'bar'}, data[1]._id]
         }
       ];
 
@@ -234,6 +237,19 @@ describe('External populate: ', function () {
               name: data[1].name,
               email: data[1].email
             }
+          },
+          {
+            test: [
+              {
+                name: data[0].name,
+                email: data[0].email
+              },
+              {foo: 'bar'},
+              {
+                name: data[1].name,
+                email: data[1].email
+              }
+            ]
           }
         ]);
         done();
@@ -242,20 +258,17 @@ describe('External populate: ', function () {
 
     it('should populate a list of paginates objects', function (done) {
       req.resultKey = {
-        options: {
-          from: 0,
-          limit: 10,
-          page: 1
-        },
         results: [
           {
             test: data[0]._id
           },
           {
             test: data[1]._id
+          },
+          {
+            test: [data[0]._id, {foo: 'bar'}, data[1]._id]
           }
-        ],
-        total: 2
+        ]
       };
 
       ExternalPopulate.populate('test', {_id: 0}, true)(req, res, function next(err) {
@@ -275,6 +288,71 @@ describe('External populate: ', function () {
               name: data[1].name,
               email: data[1].email
             }
+          },
+          {
+            test: [
+              {
+                name: data[0].name,
+                email: data[0].email
+              },
+              {foo: 'bar'},
+              {
+                name: data[1].name,
+                email: data[1].email
+              }
+            ]
+          }
+        ]);
+        done();
+      });
+    });
+
+    it('should populate only valid ids of a list', function (done) {
+      req.resultKey = [
+        {
+          test: null
+        },
+        {
+          test: {foo: 'bar'}
+        },
+        {
+          test: data[1]._id
+        },
+        {
+          test: [data[0]._id, {foo: 'bar'}, data[1]._id]
+        }
+      ];
+
+      ExternalPopulate.populate('test', {_id: 0}, true)(req, res, function next(err) {
+        if (err) {
+          throw new Error('Expected not to receive an error');
+        }
+
+        req.resultKey.should.to.deep.equal([
+          {
+            test: null
+          },
+          {
+            test: {foo: 'bar'}
+          },
+          {
+            test: {
+              name: data[1].name,
+              email: data[1].email
+            }
+          },
+          {
+            test: [
+              {
+                name: data[0].name,
+                email: data[0].email
+              },
+              {foo: 'bar'},
+              {
+                name: data[1].name,
+                email: data[1].email
+              }
+            ]
           }
         ]);
         done();
